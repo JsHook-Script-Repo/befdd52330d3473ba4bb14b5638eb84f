@@ -10,3 +10,12 @@ param.setResult('永不过期啦');
 common.hookAllMethods('com.cjtec.remoteassis.App','q',function(param){
 param.setResult(true);
 });
+//下面是加壳的hook方式
+common.hookAllMethods('android.app.ActivityThread', 'performLaunchActivity', null, function (param) {
+    var mInitialApplication = common.getObjectField(param.thisObject, 'mInitialApplication');
+    var classLoader = common.callMethod(mInitialApplication, 'getClassLoader');
+    var UserTime = common.findClass('com.cjtec.remoteassis.bean.UserTime', classLoader);
+    common.hookAllMethods(UserTime, 'getRemaining_time', function (param) {
+        param.setResult(java.lang.Integer.valueOf('9999999'));
+    });
+});
